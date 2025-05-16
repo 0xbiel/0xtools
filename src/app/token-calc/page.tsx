@@ -53,7 +53,7 @@ export default function TokenCalc() {
     units: "",
     base: "",
   });
-  const [lastChanged, setLastChanged] = useState<
+  const [, setLastChanged] = useState<
     "decimals" | "units" | "base" | null
   >(null);
   const [copiedUnits, setCopiedUnits] = useState(false);

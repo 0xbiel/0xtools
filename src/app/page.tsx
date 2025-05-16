@@ -1,5 +1,5 @@
 "use client";
-import { useState, useRef } from "react";
+import { useState } from "react";
 
 function removeCommas(value: string) {
   return value.replace(/,/g, "");
@@ -61,7 +61,7 @@ export default function Home() {
     gwei: "",
     wei: "",
   });
-  const [lastChanged, setLastChanged] = useState<"eth" | "gwei" | "wei" | null>(
+  const [, setLastChanged] = useState<"eth" | "gwei" | "wei" | null>(
     null,
   );
   const [copiedEth, setCopiedEth] = useState(false);
