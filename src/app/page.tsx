@@ -1,103 +1,217 @@
-import Image from "next/image";
+"use client";
+import { useState, useRef } from "react";
+
+function removeCommas(value: string) {
+  return value.replace(/,/g, "");
+}
+
+function formatNumberNoCommas(value: string) {
+  if (!value) return "";
+  // Use BigInt for large numbers, fallback to string
+  try {
+    if (/^\d+$/.test(value) && value.length > 15) {
+      // If it's a large integer, show as is
+      return value;
+    }
+    const num = Number(value);
+    if (isNaN(num)) return "";
+    // Show full precision, no commas, no e-notation
+    return num.toLocaleString("en-US", {
+      useGrouping: false,
+      maximumFractionDigits: 18,
+    });
+  } catch {
+    return value;
+  }
+}
+
+const WEI_IN_ETH = 1e18;
+const GWEI_IN_ETH = 1e9;
+
+function CopyIcon({ copied }: { copied: boolean }) {
+  return copied ? (
+    // Checkmark icon
+    <svg
+      className="w-4 h-4 text-green-500"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      viewBox="0 0 24 24"
+    >
+      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+    </svg>
+  ) : (
+    // Copy icon
+    <svg
+      className="w-4 h-4 text-neutral-500 hover:text-[var(--main-color)] transition"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      viewBox="0 0 24 24"
+    >
+      <rect x="9" y="9" width="13" height="13" rx="2" />
+      <path d="M5 15V5a2 2 0 0 1 2-2h10" />
+    </svg>
+  );
+}
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [values, setValues] = useState({
+    eth: "",
+    gwei: "",
+    wei: "",
+  });
+  const [lastChanged, setLastChanged] = useState<"eth" | "gwei" | "wei" | null>(
+    null,
+  );
+  const [copiedEth, setCopiedEth] = useState(false);
+  const [copiedGwei, setCopiedGwei] = useState(false);
+  const [copiedWei, setCopiedWei] = useState(false);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+  const handleChange =
+    (unit: "eth" | "gwei" | "wei") =>
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const input = removeCommas(e.target.value);
+      if (input && isNaN(Number(input))) return;
+      let eth = values.eth,
+        gwei = values.gwei,
+        wei = values.wei;
+      setLastChanged(unit);
+      if (unit === "eth") {
+        eth = input;
+        gwei = eth ? (Number(eth) * GWEI_IN_ETH).toString() : "";
+        wei = eth ? (Number(eth) * WEI_IN_ETH).toString() : "";
+      } else if (unit === "gwei") {
+        gwei = input;
+        eth = gwei ? (Number(gwei) / GWEI_IN_ETH).toString() : "";
+        wei = gwei ? (Number(gwei) * 1e9).toString() : "";
+      } else if (unit === "wei") {
+        wei = input;
+        eth = wei ? (Number(wei) / WEI_IN_ETH).toString() : "";
+        gwei = wei ? (Number(wei) / 1e9).toString() : "";
+      }
+      setValues({ eth, gwei, wei });
+    };
+
+  return (
+    <div className="flex flex-col min-h-screen">
+      <div className="max-w-2xl mx-auto min-h-screen px-6 py-12">
+        <main className="space-y-16">
+          <section className="space-y-6">
+            <h1 className="text-3xl font-bold text-[var(--main-color)]">
+              ETH Unit Converter
+            </h1>
+            <p className="text-lg text-neutral-700 dark:text-neutral-300">
+              Convert between ETH, GWEI, and WEI instantly. Enter a value in any
+              field and see the others update in real time.
+            </p>
+            <div className="flex flex-col gap-5 mt-8">
+              <div className="flex flex-col">
+                <label htmlFor="eth" className="text-sm font-medium">
+                  ETH
+                </label>
+                <div className="relative flex items-center">
+                  <input
+                    id="eth"
+                    type="text"
+                    inputMode="decimal"
+                    className="w-full px-4 py-3 pr-10 border-0 border-b border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 focus:outline-none focus:border-b-2 focus:border-[var(--main-color)] text-lg rounded-none"
+                    value={formatNumberNoCommas(values.eth)}
+                    onChange={handleChange("eth")}
+                    placeholder="1.0"
+                    autoComplete="off"
+                    style={{ paddingRight: "2.5rem" }}
+                  />
+                  <button
+                    type="button"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 p-1 bg-transparent border-none outline-none flex items-center justify-center h-6 w-6"
+                    onClick={async (e) => {
+                      e.preventDefault();
+                      await navigator.clipboard.writeText(
+                        formatNumberNoCommas(values.eth),
+                      );
+                      setCopiedEth(true);
+                      setTimeout(() => setCopiedEth(false), 1200);
+                    }}
+                    tabIndex={-1}
+                    aria-label="Copy value"
+                  >
+                    <CopyIcon copied={copiedEth} />
+                  </button>
+                </div>
+              </div>
+              <div className="flex flex-col">
+                <label htmlFor="gwei" className="text-sm font-medium">
+                  GWEI
+                </label>
+                <div className="relative flex items-center">
+                  <input
+                    id="gwei"
+                    type="text"
+                    inputMode="decimal"
+                    className="w-full px-4 py-3 pr-10 border-0 border-b border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 focus:outline-none focus:border-b-2 focus:border-[var(--main-color)] text-lg rounded-none"
+                    value={formatNumberNoCommas(values.gwei)}
+                    onChange={handleChange("gwei")}
+                    placeholder="1000000000"
+                    autoComplete="off"
+                    style={{ paddingRight: "2.5rem" }}
+                  />
+                  <button
+                    type="button"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 p-1 bg-transparent border-none outline-none flex items-center justify-center h-6 w-6"
+                    onClick={async (e) => {
+                      e.preventDefault();
+                      await navigator.clipboard.writeText(
+                        formatNumberNoCommas(values.gwei),
+                      );
+                      setCopiedGwei(true);
+                      setTimeout(() => setCopiedGwei(false), 1200);
+                    }}
+                    tabIndex={-1}
+                    aria-label="Copy value"
+                  >
+                    <CopyIcon copied={copiedGwei} />
+                  </button>
+                </div>
+              </div>
+              <div className="flex flex-col">
+                <label htmlFor="wei" className="text-sm font-medium">
+                  WEI
+                </label>
+                <div className="relative flex items-center">
+                  <input
+                    id="wei"
+                    type="text"
+                    inputMode="decimal"
+                    className="w-full px-4 py-3 pr-10 border-0 border-b border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 focus:outline-none focus:border-b-2 focus:border-[var(--main-color)] text-lg rounded-none"
+                    value={formatNumberNoCommas(values.wei)}
+                    onChange={handleChange("wei")}
+                    placeholder="1000000000000000000"
+                    autoComplete="off"
+                    style={{ paddingRight: "2.5rem" }}
+                  />
+                  <button
+                    type="button"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 p-1 bg-transparent border-none outline-none flex items-center justify-center h-6 w-6"
+                    onClick={async (e) => {
+                      e.preventDefault();
+                      await navigator.clipboard.writeText(
+                        formatNumberNoCommas(values.wei),
+                      );
+                      setCopiedWei(true);
+                      setTimeout(() => setCopiedWei(false), 1200);
+                    }}
+                    tabIndex={-1}
+                    aria-label="Copy value"
+                  >
+                    <CopyIcon copied={copiedWei} />
+                  </button>
+                </div>
+              </div>
+            </div>
+          </section>
+        </main>
+      </div>
     </div>
   );
 }
