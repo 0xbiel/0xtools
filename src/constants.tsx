@@ -4,7 +4,7 @@ import { SideNavItem } from "@/types";
 export const navItems: SideNavItem[] = [
   {
     title: "Calculators",
-    path: "/",
+    path: "/1",
     icon: <Icon icon="material-symbols:calculate" width="24" height="24" />,
     submenu: true,
     subMenuItems: [
@@ -32,7 +32,7 @@ export const navItems: SideNavItem[] = [
   },
   {
     title: "Decoders",
-    path: "/",
+    path: "/2",
     icon: <Icon icon="material-symbols:code" width="24" height="24" />,
     submenu: true,
     subMenuItems: [
