@@ -87,7 +87,6 @@ const HeaderMobile = () => {
 
 export default HeaderMobile;
 
-//eslint-disable-next-line @typescript-eslint/no-explicit-any
 const MenuToggle = ({ toggle }: { toggle: any }) => (
   <button
     onClick={toggle}
@@ -118,7 +117,6 @@ const MenuToggle = ({ toggle }: { toggle: any }) => (
   </button>
 );
 
-//eslint-disable-next-line @typescript-eslint/no-explicit-any
 const Path = (props: any) => (
   <motion.path
     fill="transparent"
@@ -219,7 +217,6 @@ const variants = {
   },
 };
 
-//eslint-disable-next-line @typescript-eslint/no-explicit-any
 const useDimensions = (ref: any) => {
   const dimensions = useRef({ width: 0, height: 0 });
 

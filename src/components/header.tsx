@@ -36,7 +36,8 @@ const Header = () => {
             href="https://biel.codes"
             target="_blank"
             rel="noopener noreferrer"
-            className="px-4 py-2 text-sm font-medium text-black dark:text-white bg-white dark:bg-neutral-950 border border-neutral-200 dark:border-neutral-800 hover:bg-neutral-50 dark:hover:bg-neutral-900 hover:text-[var(--main-color)] transition"
+            style={{color: "black"}}
+            className="px-4 py-2 text-sm font-medium text-black bg-[var(--main-color)] border border-neutral-800 dark:border-neutral-800 hover:bg-white transition"
           >
             Visit portfolio
           </Link>
